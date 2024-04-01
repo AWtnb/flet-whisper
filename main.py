@@ -1,4 +1,4 @@
-from pathlib import Path
+import os
 
 import flet as ft
 import whisper
@@ -23,8 +23,8 @@ def main(page: ft.Page):
     def on_file_picked(e: ft.FilePickerResultEvent):
         if e.files:
             target_file_path.current.value = e.files[0].path
-            output_folder_path.current.value = str(
-                Path(target_file_path.current.value).parent
+            output_folder_path.current.value = os.path.dirname(
+                target_file_path.current.value
             )
             page.update()
 
@@ -63,7 +63,10 @@ def main(page: ft.Page):
         controls=[
             ft.ElevatedButton("出力フォルダ", on_click=show_pick_folder),
             ft.Text(ref=output_folder_path),
-            ft.Text(value="※同名のファイルがあった場合は上書きされます", color=ft.colors.BLUE_GREY_400),
+            ft.Text(
+                value="※同名のファイルがあった場合は上書きされます",
+                color=ft.colors.BLUE_GREY_400,
+            ),
         ]
     )
     ui_rows.append(folder_pick_row)
@@ -76,7 +79,7 @@ def main(page: ft.Page):
         controls=[
             ft.Dropdown(
                 ref=quality_selector,
-                label= "Quality",
+                label="Quality",
                 options=[
                     ft.dropdown.Option(key="base", text="base（簡易版）"),
                     ft.dropdown.Option(key="small", text="small（低品質）"),
@@ -85,22 +88,28 @@ def main(page: ft.Page):
                 ],
                 value="base",
             ),
-            ft.Text(value="高品質になるほど処理に時間がかかります。", color=ft.colors.BLUE_GREY_400)
+            ft.Text(
+                value="高品質になるほど処理に時間がかかります。",
+                color=ft.colors.BLUE_GREY_400,
+            ),
         ]
     )
     ui_rows.append(quality_select_row)
 
     def dictate():
-        in_path = Path(target_file_path.current.value)
-        out_path = Path(output_folder_path.current.value, in_path.stem + ".txt")
+        out_basename = os.path.splitext(
+            os.path.basename(target_file_path.current.value)
+        )[0]
+        out_path = os.path.join(output_folder_path.current.value, out_basename + ".txt")
         model = whisper.load_model(quality_selector.current.value)
         result = model.transcribe(
-            target_file_path.current.value, verbose=None, language="ja"
+            target_file_path.current.value, verbose=True, language="ja"
         )
         lines = []
         for segment in result["segments"]:
             lines.append(segment["text"])
-        Path(out_path).write_text("\n".join(lines), encoding="utf-8")
+        with open(out_path, mode="w", encoding="utf-8") as f:
+            f.write("\n".join(lines))
 
     ###################################
     # execute button
