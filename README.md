@@ -4,6 +4,11 @@
 
 [whisper](https://github.com/openai/whisper) を使って日本語の文字起こしをするGUIアプリケーション（[Flet](https://flet.dev/) 製）。
 
+
+This software requires [ffmpeg](https://ffmpeg.org/), which must be installed on your PC and the ffmpeg path must be added to the user environment variable.
+
+このソフトは [ffmpeg](https://ffmpeg.org/) を必要とします。PCにはfmpegがインストールされていて、なおかつffmpegのパスが[ユーザー環境変数に追加](https://engrholiday.jp/win/surface-env-path/#:~:text=%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%81%AE%EF%BC%BB%E8%A9%B3%E7%B4%B0%E6%83%85%E5%A0%B1%EF%BC%BD%E3%82%88%E3%82%8A,%E6%96%B0%E8%A6%8F%E3%80%91%E3%82%92%E3%82%AF%E3%83%AA%E3%83%83%E3%82%AF%E3%81%97%E3%81%BE%E3%81%99%E3%80%82)されている必要があります。
+
 ## BUILD
 
 1. Find `whisper` folder inside Python site-packages folder and copy them into `assets` folder.
