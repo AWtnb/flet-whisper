@@ -1,13 +1,29 @@
 import os
+import sys
+import smtplib
+
+from email.message import EmailMessage
+from dotenv import load_dotenv
 
 import flet as ft
 import whisper
+
+
+# https://github.com/theskumar/python-dotenv/issues/259
+def get_exe_dir() -> str:
+    if getattr(sys, "frozen", False):
+        return sys._MEIPASS
+    return os.getcwd()
+
+
+load_dotenv(dotenv_path=os.path.join(get_exe_dir(), "assets", ".env"))
 
 
 def main(page: ft.Page):
     page.title = "whisper dictation"
     page.theme_mode = "light"
 
+    address_to_notify = ft.Ref[ft.Text]()
     target_file_path = ft.Ref[ft.Text]()
     output_folder_path = ft.Ref[ft.Text]()
     quality_selector = ft.Ref[ft.Dropdown]()
@@ -95,6 +111,38 @@ def main(page: ft.Page):
         ]
     )
     ui_rows.append(quality_select_row)
+    ui_rows.append(
+        ft.Row(
+            controls=[
+                ft.TextField(ref=address_to_notify, label="mail", value=""),
+                ft.Text(
+                    value="メールアドレスを指定すると完了通知と文字起こし結果を送信します（任意）",
+                    color=ft.colors.BLUE_GREY_400,
+                ),
+            ]
+        )
+    )
+
+    def send_email(attachment_path: str) -> None:
+        msg = EmailMessage()
+        msg["From"] = os.getenv("SENDER_ADDRESS")
+        msg["To"] = address_to_notify.current.value
+        msg["Subject"] = "【自動送信】文字起こしが完了しました"
+        msg.set_content("文字起こしが完了しました！")
+
+        with open(attachment_path, "rb") as f:
+            msg.add_attachment(
+                f.read(),
+                maintype="text",
+                subtype="plain",
+                filename=os.path.basename(f.name),
+            )
+
+        with smtplib.SMTP(os.getenv("SMTP_HOST"), int(os.getenv("SMTP_PORT"))) as smtp:
+            smtp.starttls()
+            smtp.connect(host=os.getenv("SMTP_HOST"))
+            smtp.login(os.getenv("SENDER_ADDRESS"), os.getenv("SENDER_PASSWORD"))
+            smtp.send_message(msg)
 
     def dictate():
         out_basename = os.path.splitext(
@@ -105,11 +153,16 @@ def main(page: ft.Page):
         result = model.transcribe(
             target_file_path.current.value, verbose=True, language="ja"
         )
+
         lines = []
         for segment in result["segments"]:
             lines.append(segment["text"])
+        result_str = os.linesep.join(lines)
         with open(out_path, mode="w", encoding="utf-8") as f:
-            f.write("\n".join(lines))
+            f.write(result_str)
+
+        if 0 < len(address_to_notify.current.value.strip()):
+            send_email(out_path)
 
     ###################################
     # execute button

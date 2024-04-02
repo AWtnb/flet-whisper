@@ -8,14 +8,34 @@ This software requires [ffmpeg](https://ffmpeg.org/), which must be installed on
 
 ## BUILD
 
-1. Find `whisper` folder inside Python site-packages folder and copy them into `assets` folder.
+
+1. Create `.env` into `assets` folder and set your mail setting.
 
     ```
     .\
     ├─main.py
     └─assets
+        └─.env
+    ```
+
+
+    ```.env
+    SENDER_ADDRESS=●●
+    SENDER_PASSWORD=●●
+    SMTP_HOST=●●
+    SMTP_PORT=●●
+    ```
+
+1. Find `whisper` folder inside Python site-packages folder and copy them into `assets` folder.
+
+    ```
+    .\
+    ├─main.py
+    ├─.env
+    └─assets
+        ├─.env
         └─whisper
-            ├─...
+            ├─…
             ︙
     ```
 
@@ -28,7 +48,7 @@ This software requires [ffmpeg](https://ffmpeg.org/), which must be installed on
 1. Run:
 
     ```
-    pyinstaller --onefile --name okoshi --add-data "assets\whisper;whisper" .\main.py
+    pyinstaller --onefile --name okoshi --add-data "assets\whisper;whisper" --add-data "assets\.env;assets" .\main.py
     ```
 
 1. Re-install pathlib:
