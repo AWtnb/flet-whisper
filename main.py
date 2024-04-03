@@ -128,7 +128,7 @@ def main(page: ft.Page):
         msg["From"] = os.getenv("SENDER_ADDRESS")
         msg["To"] = address_to_notify.current.value
         msg["Subject"] = "【自動送信】文字起こしが完了しました"
-        msg.set_content("文字起こしが完了しました！")
+        msg.set_content("文字起こしが完了しました！ 結果を添付します。\n\nPCにテキストファイルと音声データが残っているので適宜お片付けください。")
 
         with open(attachment_path, "rb") as f:
             msg.add_attachment(
