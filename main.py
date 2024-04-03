@@ -164,6 +164,8 @@ def main(page: ft.Page):
         if 0 < len(address_to_notify.current.value.strip()):
             send_email(out_path)
 
+        print("===== FINISED! =====")
+
     ###################################
     # execute button
     ###################################

@@ -26,19 +26,6 @@ This software requires [ffmpeg](https://ffmpeg.org/), which must be installed on
     SMTP_PORT=●●
     ```
 
-1. Find `whisper` folder inside Python site-packages folder and copy them into `assets` folder.
-
-    ```
-    .\
-    ├─main.py
-    ├─.env
-    └─assets
-        ├─.env
-        └─whisper
-            ├─…
-            ︙
-    ```
-
 1. Remove pathlib module for pyinstaller compatibility:
 
     ```
@@ -48,7 +35,7 @@ This software requires [ffmpeg](https://ffmpeg.org/), which must be installed on
 1. Run:
 
     ```
-    pyinstaller --onefile --name okoshi --add-data "assets\whisper;whisper" --add-data "assets\.env;assets" .\main.py
+    pyinstaller --onefile --name okoshi --collect-data whisper --add-data "assets\.env;assets" .\main.py
     ```
 
 1. Re-install pathlib:
