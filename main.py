@@ -1,6 +1,7 @@
 import os
 import sys
 import smtplib
+import subprocess
 
 from email.message import EmailMessage
 from dotenv import load_dotenv
@@ -9,14 +10,24 @@ import flet as ft
 import whisper
 
 
+def is_ffmpeg_callable() -> bool:
+    try:
+        subprocess.run(
+            ["ffmpeg", "-version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
+        return True
+    except:
+        return False
+
+
 # https://github.com/theskumar/python-dotenv/issues/259
-def get_exe_dir() -> str:
+def get_root_dir() -> str:
     if getattr(sys, "frozen", False):
         return sys._MEIPASS
     return os.getcwd()
 
 
-load_dotenv(dotenv_path=os.path.join(get_exe_dir(), "assets", ".env"))
+load_dotenv(dotenv_path=os.path.join(get_root_dir(), "assets", ".env"))
 
 
 def main(page: ft.Page):
@@ -128,7 +139,9 @@ def main(page: ft.Page):
         msg["From"] = os.getenv("SENDER_ADDRESS")
         msg["To"] = address_to_notify.current.value
         msg["Subject"] = "【自動送信】文字起こしが完了しました"
-        msg.set_content("文字起こしが完了しました！ 結果を添付します。\n\nPCにテキストファイルと音声データが残っているので適宜お片付けください。")
+        msg.set_content(
+            "文字起こしが完了しました！ 結果を添付します。\n\nPCにテキストファイルと音声データが残っているので適宜お片付けください。"
+        )
 
         with open(attachment_path, "rb") as f:
             msg.add_attachment(
@@ -212,4 +225,8 @@ def main(page: ft.Page):
     page.add(ui_controls)
 
 
-ft.app(target=main)
+if __name__ == "__main__":
+    if is_ffmpeg_callable():
+        ft.app(target=main)
+    else:
+        input("ffmpegを利用できません……\n（ENTERを押して終了してください）")
