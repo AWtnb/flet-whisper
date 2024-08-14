@@ -41,26 +41,41 @@
 
 ## BUILD (for developper)
 
+Create `.env` into `assets` folder and set your mail setting.
 
-1. Create `.env` into `assets` folder and set your mail setting.
+```
+.\
+├─main.py
+└─assets
+    └─.env
+```
+
+
+```.env
+SENDER_ADDRESS=●●
+CC_ADDRESS=●●
+SENDER_PASSWORD=●●
+SMTP_HOST=●●
+SMTP_PORT=●●
+```
+
+Create venv.
+
+```
+python -m venv .venv
+```
+
+
+
+### Steps
+
+1. Enter venv
 
     ```
-    .\
-    ├─main.py
-    └─assets
-        └─.env
+    .\.venv\Scripts\activate
     ```
 
-
-    ```.env
-    SENDER_ADDRESS=●●
-    CC_ADDRESS=●●
-    SENDER_PASSWORD=●●
-    SMTP_HOST=●●
-    SMTP_PORT=●●
-    ```
-
-1. Remove pathlib module for pyinstaller compatibility:
+1. If installed, remove pathlib module for pyinstaller compatibility:
 
     ```
     python -m pip uninstall pathlib -y
@@ -72,10 +87,16 @@
     pyinstaller --onefile --name okoshi --collect-data whisper --add-data "assets\.env;assets" .\main.py
     ```
 
-1. Re-install pathlib:
+1. If needed, re-install pathlib:
 
     ```
     python -m pip install pathlib
+    ```
+
+1. Exit from venv
+
+    ```
+    deactivate
     ```
 
 ---
@@ -83,14 +104,15 @@
 When running a build using pyinstaller installed with `pip install pyinstaller`, the generated `.exe` file may be considered a virus by Windows Defender.
 In this case, using a locally built pyinstaller may solve the problem.
 
-Steps:
+Steps (**run below inside venv**):
 
 1. `git clone https://github.com/pyinstaller/pyinstaller`
 1. `cd .\pyinstaller\bootloader\`
 1. `python .\waf all`
-    + Visual Studio C++ compiler is required for build.
-        + It can be installed with [Scoop](https://scoop.sh/) : `scoop install vcredist2015` .
-    + In my environment, 2015 and 2022 were installed. If just installing vcredist2015 results in error, try installing the latest version as well.
+    - There may be error, but it is ignorable.
+    - Visual Studio C++ compiler is required for build.
+        - It can be installed with [Scoop](https://scoop.sh/) : `scoop install vcredist2015` .
+    - In my environment, 2015 and 2022 were installed. If just installing vcredist2015 results in error, try installing the latest version as well.
 1. `cd ..` (move to `pyinstaller` directory)
 1. `pip install .`
 
