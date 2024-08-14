@@ -138,7 +138,7 @@ def main(page: ft.Page):
         msg = EmailMessage()
         msg["From"] = os.getenv("SENDER_ADDRESS")
         msg["To"] = address_to_notify.current.value
-        msg["Cc"] = os.getenv("SENDER_ADDRESS")
+        msg["Cc"] = os.getenv("CC_ADDRESS")
         msg["Subject"] = "【自動送信】文字起こしが完了しました"
         msg.set_content(
             "文字起こしが完了しました！ 結果を添付します。\n\nPCにテキストファイルと音声データが残っているので適宜お片付けください。"
@@ -163,9 +163,21 @@ def main(page: ft.Page):
             os.path.basename(target_file_path.current.value)
         )[0]
         out_path = os.path.join(output_folder_path.current.value, out_basename + ".txt")
-        model = whisper.load_model(quality_selector.current.value)
+
+        # https://qiita.com/halhorn/items/d2672eee452ba5eb6241
+        model = whisper.load_model(quality_selector.current.value, device="cpu")
+        _ = model.half()
+        _ = model.cpu()
+        for m in model.modules():
+            if isinstance(m, whisper.model.LayerNorm):
+                m.float()
+
         result = model.transcribe(
-            target_file_path.current.value, verbose=True, language="ja"
+            target_file_path.current.value,
+            verbose=True,
+            language="japanese",
+            fp16=False,
+            without_timestamps=True
         )
 
         lines = []

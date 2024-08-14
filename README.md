@@ -54,6 +54,7 @@
 
     ```.env
     SENDER_ADDRESS=●●
+    CC_ADDRESS=●●
     SENDER_PASSWORD=●●
     SMTP_HOST=●●
     SMTP_PORT=●●
@@ -62,7 +63,7 @@
 1. Remove pathlib module for pyinstaller compatibility:
 
     ```
-    python -m pip uninstall pathlib
+    python -m pip uninstall pathlib -y
     ```
 
 1. Run:
