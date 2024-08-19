@@ -65,6 +65,12 @@ Create venv.
 python -m venv .venv
 ```
 
+Install packages:
+
+```
+python -m pip install flet
+python -m pip install openai-whisper
+```
 
 
 ### Steps
@@ -75,23 +81,14 @@ python -m venv .venv
     .\.venv\Scripts\activate
     ```
 
-1. If installed, remove pathlib module for pyinstaller compatibility:
-
-    ```
-    python -m pip uninstall pathlib -y
-    ```
-
 1. Run:
 
     ```
     pyinstaller --onefile --name okoshi --collect-data whisper --add-data "assets\.env;assets" .\main.py
     ```
 
-1. If needed, re-install pathlib:
-
-    ```
-    python -m pip install pathlib
-    ```
+    - If error was raised around pathlib, uninstall it: `python -m pip uninstall pathlib -y`
+    - After build, re-install: `python -m pip install pathlib`
 
 1. Exit from venv
 
