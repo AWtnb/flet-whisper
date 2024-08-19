@@ -75,7 +75,7 @@ python -m pip install openai-whisper
 
 ### Steps
 
-1. Enter venv
+1. Enter venv ([Skippable on VSCode.](https://github.com/microsoft/vscode-python/wiki/Activate-Environments-in-Terminal-Using-Environment-Variables))
 
     ```
     .\.venv\Scripts\activate
@@ -90,7 +90,7 @@ python -m pip install openai-whisper
     - If error was raised around pathlib, uninstall it: `python -m pip uninstall pathlib -y`
     - After build, re-install: `python -m pip install pathlib`
 
-1. Exit from venv
+1. Exit from venv ([Skippable on VSCode.](https://github.com/microsoft/vscode-python/wiki/Activate-Environments-in-Terminal-Using-Environment-Variables))
 
     ```
     deactivate
