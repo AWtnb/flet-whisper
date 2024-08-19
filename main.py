@@ -177,7 +177,7 @@ def main(page: ft.Page):
             verbose=True,
             language="japanese",
             fp16=False,
-            without_timestamps=True
+            word_timestamps=True
         )
 
         lines = []
