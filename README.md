@@ -69,6 +69,7 @@ Install packages:
 
 ```
 python -m pip install flet
+python -m pip install python-dotenv
 python -m pip install openai-whisper
 ```
 
