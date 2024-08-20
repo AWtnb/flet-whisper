@@ -39,7 +39,7 @@
     - メール通知後もプログラムを実行したPCには音声ファイルとテキストファイルが残っているので、適宜片付けてください
 1. 黒い画面かメイン画面のどちらかを閉じるとプログラムが終了します
 
-## BUILD (for developper)
+## Build (for developper)
 
 Create `.env` into `assets` folder and set your mail setting.
 
@@ -50,8 +50,9 @@ Create `.env` into `assets` folder and set your mail setting.
     └─.env
 ```
 
+`.env` :
 
-```.env
+```
 SENDER_ADDRESS=●●
 CC_ADDRESS=●●
 SENDER_PASSWORD=●●
@@ -74,9 +75,25 @@ python -m pip install openai-whisper
 ```
 
 
-### Steps
+Build pyinstaller locally (`.exe` generated with pip-installed pyinstaller is often considered as virus by security soft):
 
-1. Enter venv ([Skippable on VSCode](https://github.com/microsoft/vscode-python/wiki/Activate-Environments-in-Terminal-Using-Environment-Variables))
+1. `git clone https://github.com/pyinstaller/pyinstaller`
+1. `cd .\pyinstaller\bootloader\`
+1. `python .\waf all`
+    - Build would fail, but it is ignorable.
+    - Visual Studio C++ compiler is required for build.
+        - It can be installed with [Scoop](https://scoop.sh/) : `scoop install vcredist2015` .
+    - In my environment, 2015 and 2022 were installed. If just installing vcredist2015 results in error, try installing the latest version as well.
+1. `cd ..` (move to `pyinstaller` directory)
+1. `pip install .`
+1. Delete `pyinstaller` folder.
+    - This folder is used only for package build and no longer used.
+
+
+
+### Build `okoshi.exe`
+
+1. Enter venv ([skippable on VSCode](https://github.com/microsoft/vscode-python/wiki/Activate-Environments-in-Terminal-Using-Environment-Variables))
 
     ```
     .\.venv\Scripts\activate
@@ -91,28 +108,8 @@ python -m pip install openai-whisper
     - If error was raised around pathlib, uninstall it: `python -m pip uninstall pathlib -y`
     - After build, re-install: `python -m pip install pathlib`
 
-1. Exit from venv ([Skippable on VSCode](https://github.com/microsoft/vscode-python/wiki/Activate-Environments-in-Terminal-Using-Environment-Variables))
+1. Exit from venv ([skippable on VSCode](https://github.com/microsoft/vscode-python/wiki/Activate-Environments-in-Terminal-Using-Environment-Variables))
 
     ```
     deactivate
     ```
-
----
-
-When running a build using pyinstaller installed with `pip install pyinstaller`, the generated `.exe` file may be considered a virus by Windows Defender.
-In this case, using a locally built pyinstaller may solve the problem.
-
-Steps (**run below inside venv**):
-
-1. `git clone https://github.com/pyinstaller/pyinstaller`
-1. `cd .\pyinstaller\bootloader\`
-1. `python .\waf all`
-    - There may be error, but it is ignorable.
-    - Visual Studio C++ compiler is required for build.
-        - It can be installed with [Scoop](https://scoop.sh/) : `scoop install vcredist2015` .
-    - In my environment, 2015 and 2022 were installed. If just installing vcredist2015 results in error, try installing the latest version as well.
-1. `cd ..` (move to `pyinstaller` directory)
-1. `pip install .`
-
-This will build pyinstaller in the python site-package folder.
-The folder used for the build is no longer used, so you can delete it.
